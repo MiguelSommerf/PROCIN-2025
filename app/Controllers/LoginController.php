@@ -13,7 +13,7 @@ class LoginController extends BaseController
     
     public function cadastrarUsuario(): ResponseInterface
     {
-        $request = $_POST;
+        $request = $this->request->getPost();
         $validation = \Config\Services::validation();
 
         $rules = [
@@ -63,7 +63,7 @@ class LoginController extends BaseController
 
     public function logarUsuario(): ResponseInterface
     {
-        $request = $_POST;
+        $request = $this->request->getPost();
         $validation = \Config\Services::validation();
 
         $rules = [
