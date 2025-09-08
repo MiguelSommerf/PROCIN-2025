@@ -18,7 +18,7 @@ class LoginController extends BaseController
 
         $rules = [
             'nome_usuario'       => 'required|min_length[3]|max_length[50]',
-            'email_usuario'      => 'required|valid_email|max_length[255]',
+            'email_usuario'      => 'required|valid_email|max_length[255]|is_unique[tb_usuario.email_usuario]',
             'senha_usuario'      => 'required|min_length[8]',
             'nascimento_usuario' => 'required'
         ];
@@ -34,7 +34,8 @@ class LoginController extends BaseController
             'email_usuario' => [
                 'required'    => 'O endereço de e-mail é obrigatório.',
                 'valid_email' => 'O endereço de e-mail precisa ser válido.',
-                'max_length'  => 'O endereço de e-mail pode conter no máximo 255 caracteres.'
+                'max_length'  => 'O endereço de e-mail pode conter no máximo 255 caracteres.',
+                'is_unique'   => 'O endereço de e-mail inserido já está cadastrado.'
             ],
 
             'senha_usuario' => [

@@ -14,13 +14,6 @@ class UserModel extends Model
 
     protected bool $updateOnlyChanged = true;
 
-    // Dates
-    protected $useTimestamps = true;
-    protected $dateFormat    = 'datetime';
-    protected $createdField  = 'criado_em';
-    protected $updatedField  = 'atualizado_em';
-    protected $deletedField  = 'deletado_em';
-
     public function inserirUsuario(array $usuario): bool
     {
         if (!empty($usuario)) {
@@ -38,10 +31,10 @@ class UserModel extends Model
 
     public function verificarSenha(array $request, string $senha): bool
     {
-        $usuario = $this->retornarUsuario($request['email_usuario']);
+        $dadosUsuario = $this->retornarDadosUsuario($request['email_usuario']);
 
-        if ($usuario) {
-            if (password_verify($senha, $usuario['senha_usuario'])) {
+        if ($dadosUsuario) {
+            if (password_verify($senha, $dadosUsuario['senha_usuario'])) {
                 return true;
             }
 
@@ -51,13 +44,12 @@ class UserModel extends Model
         return false;
     }
 
-    public function retornarUsuario($email): array|bool
+    public function retornarDadosUsuario($email): array|bool
     {
         $query = $this->where('email_usuario', $email)->first();
 
         if (!empty($query)) {
             $usuario = [
-                'nome_usuario'  => $query['nome_usuario'],
                 'email_usuario' => $query['email_usuario'],
                 'senha_usuario' => $query['senha_usuario']
             ];
