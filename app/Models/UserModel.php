@@ -36,14 +36,30 @@ class UserModel extends Model
         return false;
     }
 
-    public function retornarUsuario($id): array|bool
+    public function verificarSenha(array $request, string $senha): bool
     {
-        $data = $this->find($id);
+        $usuario = $this->retornarUsuario($request['email_usuario']);
 
-        if (!empty($data)) {
+        if ($usuario) {
+            if (password_verify($senha, $usuario['senha_usuario'])) {
+                return true;
+            }
+
+            return false;
+        }
+
+        return false;
+    }
+
+    public function retornarUsuario($email): array|bool
+    {
+        $query = $this->where('email_usuario', $email)->first();
+
+        if (!empty($query)) {
             $usuario = [
-                'nome_usuario'  => $data['nome_usuario'],
-                'email_usuario' => $data['email_usuario']
+                'nome_usuario'  => $query['nome_usuario'],
+                'email_usuario' => $query['email_usuario'],
+                'senha_usuario' => $query['senha_usuario']
             ];
 
             return $usuario;

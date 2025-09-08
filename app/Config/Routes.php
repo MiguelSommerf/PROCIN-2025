@@ -5,7 +5,7 @@ use CodeIgniter\Router\RouteCollection;
 /**
  * @var RouteCollection $routes
  */
-$routes->group('usuario', function (RouteCollection $routes){
-    $routes->post('cadastrar', 'UserController::cadastrarUsuario');
-    $routes->get('listar/(:num)', 'UserController::listarUsuario/$1');
+$routes->group('src', function (RouteCollection $routes){
+    $routes->post('cadastrar', 'LoginController::cadastrarUsuario');
+    $routes->post('login', 'LoginController::logarUsuario');
 });
