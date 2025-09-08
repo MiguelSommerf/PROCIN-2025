@@ -9,3 +9,5 @@ $routes->group('src', function (RouteCollection $routes){
     $routes->post('cadastrar', 'LoginController::cadastrarUsuario');
     $routes->post('login', 'LoginController::logarUsuario');
 });
+
+$routes->resource('produtos', ['controller' => 'ProdutosController']);
