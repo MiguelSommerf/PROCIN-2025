@@ -45,12 +45,12 @@ class Usuario extends Migration
             'atualizado_em'      => [
                 'type'           => 'DATETIME',
                 'null'           => true,
-                'default'        => new RawSql('CURRENT_TIMESTAMP'),
+                'default'        => null,
             ],
             'deletado_em'        => [
                 'type'           => 'DATETIME',
                 'null'           => true,
-                'default'        => new RawSql('CURRENT_TIMESTAMP'),
+                'default'        => null,
             ],
             ]);
         $this->forge->addKey('id_usuario', true);
