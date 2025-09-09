@@ -63,6 +63,8 @@ class GoogleAuth extends ResourceController
             $user = $userModel->where('email_usuario', $googleUser->email)->first();
         }
 
+        helper('jwt');
+
         $jwt = createJWT([
             'id'    => $user['id_usuario'],
             'email' => $user['email_usuario'],

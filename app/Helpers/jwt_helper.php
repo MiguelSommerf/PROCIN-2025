@@ -12,8 +12,8 @@ function createJWT($user): Firebase\JWT\JWT|string
         'aud' => getenv('jwt.audience'),
         'iat' => $issuedAt,
         'exp' => $expire,
-        'sub' => $user['id_usuario'],
-        'email' => $user['email_usuario'],
+        'sub' => $user['id'],
+        'email' => $user['email'],
     ];
 
     return JWT::encode($payload, getenv('jwt.secret'), 'HS256');
