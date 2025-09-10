@@ -19,7 +19,10 @@ class UserModel extends Model
         if (!empty($usuario)) {
             $usuario['nome_usuario'] = trim(ucfirst($usuario['nome_usuario']));
             $usuario['email_usuario'] = trim(strtolower($usuario['email_usuario']));
-            $usuario['senha_usuario'] = password_hash($usuario['senha_usuario'], PASSWORD_DEFAULT);
+
+            if (!empty($usuario['senha_usuario'])) {
+                $usuario['senha_usuario'] = password_hash($usuario['senha_usuario'], PASSWORD_DEFAULT);
+            }
 
             $this->insert($usuario);
             

@@ -46,20 +46,37 @@ class GoogleAuth extends ResourceController
 
         $client->setAccessToken($token['access_token']);
         $googleService = new \Google\Service\OAuth2($client);
-        $googleUser = $googleService->userinfo->get();
+        $googleUser = $googleService->userinfo->get();   
+
+        $validation = \Config\Services::validation();
+
+        $rules = [
+            'email_usuario' => 'required|valid_email|max_length[255]|is_unique[tb_usuario.email_usuario]'
+        ];
+
+        // Por conta da língua, essas mensagens podem ir para um outro arquivo futuramente.
+        $messages = [
+            'email_usuario' => [
+                'is_unique'   => 'O endereço de e-mail inserido já está cadastrado.'
+            ]
+        ];
+
+        $userData = [
+            'nome_usuario' => $googleUser->name,
+            'email_usuario' => $googleUser->email,
+            'senha_usuario' => null,
+            'nascimento_usuario' => '0000-00-00',
+        ];
+
+        if (!$validation->setRules($rules, $messages)->run($userData)) {
+            return $this->failValidationErrors($validation->getErrors());
+        }
 
         $userModel = new UserModel();
         $user = $userModel->where('email_usuario', $googleUser->email)->first();
 
         if (!$user) {
-            $userData = [
-                'nome_usuario' => $googleUser->name,
-                'email_usuario' => $googleUser->email,
-                'senha_usuario' => null,
-                'nascimento_usuario' => '0000-00-00',
-            ];
-
-            $userModel->insert($userData);
+            $userModel->inserirUsuario($userData);
             $user = $userModel->where('email_usuario', $googleUser->email)->first();
         }
 

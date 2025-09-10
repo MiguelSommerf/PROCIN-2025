@@ -9,8 +9,9 @@ $routes->group('src', function (RouteCollection $routes){
     $routes->post('cadastrar', 'LoginController::cadastrarUsuario');
     $routes->post('login', 'LoginController::logarUsuario');
 });
-$routes->group('api', ['filter' => 'jwt'], function($routes) {
-    $routes->get('profile', 'User::profile');
+$routes->group('auth/google', function (RouteCollection $routes) {
+    $routes->get('url','GoogleAuth::googleUrl');
+    $routes->get('callback', 'GoogleAuth::googleCallback');
 });
-$routes->get('auth/google/url', 'GoogleAuth::googleUrl');
-$routes->get('auth/google/callback', 'GoogleAuth::googleCallback');
+
+$routes->resource('produtos', ['controller' => 'ProdutosController']);
