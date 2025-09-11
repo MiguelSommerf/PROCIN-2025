@@ -7,7 +7,7 @@ use CodeIgniter\Model;
 class ProdutoModel extends Model
 {
     protected $table = 'tb_produto'; // qual tabela vai ser manipulada
-    protected $primaryKey = 'id_produto'; // definindo a chave primaria da tabela
+    protected $primaryKey = 'id'; // definindo a chave primaria da tabela
     protected $useAutoIncrement = true;   // indica que auto incremento aqui nessa linha (o banco gera o propximo numero ao adicionar algum produto)
     protected $protectFields = true; // aqui indica que só os campos listados com allowdFields podem ser manipulados
 
