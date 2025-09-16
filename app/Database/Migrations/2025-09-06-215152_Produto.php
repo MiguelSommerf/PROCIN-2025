@@ -9,7 +9,7 @@ class CreateProdutosTable extends Migration
     public function up()
     {
         $this->forge->addField([
-            'id' => [
+            'id_produto' => [
                 'type'           => 'INT',
                 'constraint'     => 11,
                 'unsigned'       => true,
@@ -63,7 +63,7 @@ class CreateProdutosTable extends Migration
             'atualizado_em DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP',
         ]);
 
-        $this->forge->addKey('id', true);
+        $this->forge->addKey('id_produto', true);
         $this->forge->createTable('tb_produto', true);
     }
 
