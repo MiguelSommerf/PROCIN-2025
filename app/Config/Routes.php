@@ -8,6 +8,7 @@ use CodeIgniter\Router\RouteCollection;
 $routes->group('src', function (RouteCollection $routes){
     $routes->post('cadastrar', 'LoginController::cadastrarUsuario');
     $routes->post('login', 'LoginController::logarUsuario');
+    $routes->post('carrinho', 'CarrinhoController::carrinho');
     $routes->post('pagamento', 'PagamentoController::gerarTransacao');
 });
 

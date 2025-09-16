@@ -7,7 +7,7 @@ use MercadoPago\MercadoPagoConfig;
 
 class PagamentoModel extends Model
 {
-    protected $table            = 'tb_pagamentos';
+    protected $table            = 'tb_pagamento';
     protected $primaryKey       = 'id_pagamento';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
@@ -26,23 +26,18 @@ class PagamentoModel extends Model
             "failure" => "https://test.com/failure",
             "pending" => "https://test.com/pending"
         ),
-        "differential_pricing" => array(
-            "id" => 1,
-        ),
-        "expires" => false,
         "items" => array(
             array(
-                "id" => "1234",
-                "title" => "Dummy Title",
-                "description" => "Dummy description",
+                "id" => "",
+                "title" => "",
+                "description" => "",
                 "picture_url" => "https://www.myapp.com/myimage.jpg",
-                "category_id" => "car_electronics",
+                "category_id" => "",
                 "quantity" => 2,
                 "currency_id" => "BRL",
                 "unit_price" => 100
             )
         ),
-        "marketplace_fee" => 0,
         "payer" => array(
             "name" => "Test",
             "surname" => "User",
@@ -61,13 +56,7 @@ class PagamentoModel extends Model
                 "street_number" => "123"
             )
         ),
-        "additional_info" => "Discount: 12.00",
         "auto_return" => "all",
-        "binary_mode" => true,
-        "external_reference" => "1643827245",
-        "marketplace" => "none",
-        "notification_url" => "https://notificationurl.com",
-        "operation_type" => "regular_payment",
         "payment_methods" => array(
             "default_payment_method_id" => "master",
             "excluded_payment_types" => array(
