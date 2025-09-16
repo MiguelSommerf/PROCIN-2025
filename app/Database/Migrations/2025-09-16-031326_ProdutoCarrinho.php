@@ -4,12 +4,12 @@ namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
-class ItemCarrinho extends Migration
+class ProdutoCarrinho extends Migration
 {
     public function up(): void
     {
         $this->forge->addField([
-            'id_item_carrinho'   => [
+            'id_produto_carrinho'   => [
                 'type'           => 'INT',
                 'constraint'     => 11,
                 'auto_increment' => true
@@ -37,14 +37,14 @@ class ItemCarrinho extends Migration
                 'constraint'     => '10,2',
             ]
         ]);
-        $this->forge->addKey('id_item_carrinho', true);
+        $this->forge->addKey('id_produto_carrinho', true);
         $this->forge->addForeignKey('id_carrinho', 'tb_carrinho', 'id_carrinho');
         $this->forge->addForeignKey('id_produto', 'tb_produto', 'id_produto');
-        $this->forge->createTable('tb_item_carrinho');
+        $this->forge->createTable('tb_produto_carrinho');
     }
 
     public function down(): void
     {
-        $this->forge->dropTable('tb_item_carrinho');
+        $this->forge->dropTable('tb_produto_carrinho');
     }
 }

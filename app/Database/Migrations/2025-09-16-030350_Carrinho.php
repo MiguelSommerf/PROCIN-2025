@@ -20,6 +20,7 @@ class Carrinho extends Migration
                 'type'           => 'INT',
                 'constraint'     => 11,
                 'unsigned'       => true,
+                'unique'         => true,
                 'null'           => false
             ],
             'criado_em'          => [
