@@ -51,7 +51,7 @@ class Usuario extends Migration
                 'type'           => 'DATETIME',
                 'null'           => true,
                 'default'        => null,
-            ],
+            ]
             ]);
         $this->forge->addKey('id_usuario', true);
         $this->forge->createTable('tb_usuario');

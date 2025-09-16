@@ -5,32 +5,27 @@ namespace App\Database\Migrations;
 use CodeIgniter\Database\Migration;
 use CodeIgniter\Database\RawSql;
 
-class Produto extends Migration
+class Carrinho extends Migration
 {
     public function up(): void
     {
         $this->forge->addField([
-            'id_produto'         => [
+            'id_carrinho'        => [
                 'type'           => 'INT',
                 'constraint'     => 11,
                 'unsigned'       => true,
                 'auto_increment' => true
             ],
-            'nome_produto'       => [
-                'type'           => 'VARCHAR',
-                'constraint'     => 255,
+            'id_usuario'         => [
+                'type'           => 'INT',
+                'constraint'     => 11,
+                'unsigned'       => true,
+                'null'           => false
             ],
-            'descricao_produto'  => [
-                'type'           => 'VARCHAR',
-                'constraint'     => 255,
-            ],
-            'preco_produto'      => [
-                'type'           => 'DECIMAL',
-                'constraint'     => '10,2',
-            ],
-            'postado_em'         => [
+            'criado_em'          => [
                 'type'           => 'DATETIME',
                 'default'        => new RawSql('CURRENT_TIMESTAMP'),
+                'null'           => false
             ],
             'atualizado_em'      => [
                 'type'           => 'DATETIME',
@@ -43,12 +38,14 @@ class Produto extends Migration
                 'default'        => null
             ]
         ]);
-        $this->forge->addKey('id_produto', true);
-        $this->forge->createTable('tb_produto');
+
+        $this->forge->addKey('id_carrinho', true);
+        $this->forge->addForeignKey('id_usuario', 'tb_usuario', 'id_usuario');
+        $this->forge->createTable('tb_carrinho');
     }
 
     public function down(): void
     {
-        $this->forge->dropTable('tb_produto');
+        $this->forge->dropTable('tb_carrinho');
     }
 }
