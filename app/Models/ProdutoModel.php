@@ -6,67 +6,117 @@ use CodeIgniter\Model;
 
 class ProdutoModel extends Model
 {
-    protected $table = 'tb_produto'; // qual tabela vai ser manipulada
-    protected $primaryKey = 'id'; // definindo a chave primaria da tabela
-    protected $useAutoIncrement = true;   // indica que auto incremento aqui nessa linha (o banco gera o propximo numero ao adicionar algum produto)
-    protected $protectFields = true; // aqui indica que só os campos listados com allowdFields podem ser manipulados
+    // tabela que esse model usa no banco
+    protected $table = 'tb_produto'; 
+    
+    // chave primária da tabela
+    protected $primaryKey = 'id'; 
+    
+    // id cresce sozinho (auto incremento)
+    protected $useAutoIncrement = true;   
+    
+    // só deixa mexer nos campos que estão em $allowedFields
+    protected $protectFields = true; 
 
-    protected $allowedFields = ['nome_produto', 'descricao_produto', 'preco_produto', 'estoque_produto', 'especificacao_produto', 'tags_produto', 'marca_produto', 'localidade_produto','imagem_produto'];
-     // aqui os campos serao manipulados pelo model
-
-    protected $useTimestamps = true; // usado para colocar quando foi criado, automaticamente sem precisar de nenhum campo
-    protected $createdField  = 'criado_em';
-    protected $updatedField  = 'atualizado_em'; 
-
-    protected $validationRules = [
-        'nome_produto' => 'required|min_length[3]|max_length[150]',
-        'preco_produto' => 'required|decimal',
-        'estoque_produto' => 'required|integer',
-        'especificacao_produto' => 'required|min_length[16]|max_length[300]',
-        // 'tags_produto' => sem regra
-        //'marca_produto' => sem regra
-        'localidade_produto' => 'required'
-
-    ]; // regras de validação pra cada campo no bloco acima
-
-    // validations usado pra regras nos campos, abaixo configurei para dar os "echos"  quando cair nessa situação
-    protected $validationMessages = [
-        'nome_produto' => [
-            'required' => 'o nome do produto é obrigatório',
-            'min_length' => 'o nome deve ter no minimo 3 caracteres'
-        ],
-
-        'preco_produto' => [
-            'required' => 'o preco é obrigatorio',
-            'decimal' => 'o preco precisa ser numero decimal'
-        ],
-
-        'estoque_produto' => [
-            'required' => 'obrigatorio o estoque',
-            'integer' => 'tem que ser numero inteiro'
-        ],
-
-        'especificacao_produto' => [
-            'required' => 'você precisa especificar melhor seu produto ( cor, tamanho etc..)',
-            'min_length' => 'escreva mais na especificacao'
-        ],
-
-        'localidade_produto' => [
-            'required' => 'você precisa especificar melhor seu produto ( cor, tamanho etc..)'
-        ],
-
+    // lista de campos que podem ser inseridos ou atualizados
+    protected $allowedFields = [
+        'nome_produto',
+        'descricao_produto',
+        'preco_produto',
+        'estoque_produto',
+        'especificacao_produto',
+        'tags_produto',
+        'marca_produto',
+        'localidade_produto',
+        'imagem_produto'
     ];
 
-    public function inserirProduto(array $produto) : bool // array $produto exige que o valor passado seja um array com os valores
-    {
-        if(!empty($produto)){ // se tiver vazio ja retorna falso no final isso 
-            $produto['nome_produto'] = trim(ucfirst($produto['nome_produto'])); // trim (tira espacos sobrando e ucFirst deixa a primeira sempre maiuscula
-            $produto['preco_produto'] = (float) $produto['preco_produto']; // define float para moeda no preco
-            $produto['estoque_produto'] = (int) $produto['estoque_produto'];
+    // adiciona automaticamente as datas de criação e atualização
+    protected $useTimestamps = true; 
+    protected $createdField  = 'criado_em';   
+    protected $updatedField  = 'atualizado_em'; 
 
-            return $this->insert($produto); // chamei o metodo para inserir, se der certo da bom
+    // regras de validação pros campos antes de salvar
+    protected $validationRules = [
+        'nome_produto'          => 'required|min_length[3]|max_length[150]',
+        'preco_produto'         => 'required|decimal',
+        'estoque_produto'       => 'required|integer',
+        'especificacao_produto' => 'required|min_length[16]|max_length[300]',
+        'localidade_produto'    => 'required'
+    ];
+
+    // mensagens de erro personalizadas caso as regras não sejam seguidas
+    protected $validationMessages = [
+        'nome_produto' => [
+            'required'   => 'O nome do produto é obrigatório',
+            'min_length' => 'O nome precisa ter pelo menos 3 caracteres'
+        ],
+        'preco_produto' => [
+            'required' => 'O preço é obrigatório',
+            'decimal'  => 'O preço deve estar em formato decimal'
+        ],
+        'estoque_produto' => [
+            'required' => 'O estoque é obrigatório',
+            'integer'  => 'O estoque precisa ser um número inteiro'
+        ],
+        'especificacao_produto' => [
+            'required'   => 'A especificação do produto é obrigatória',
+            'min_length' => 'Escreva mais detalhes na especificação'
+        ],
+        'localidade_produto' => [
+            'required' => 'A localidade do produto é obrigatória'
+        ]
+    ];
+
+    // insere um novo produto no banco, já cuidando da imagem se tiver
+    public function inserirProduto(array $dados, $file = null): bool
+    {
+        if ($file && $file->isValid()) {
+            $nomeImagem = $file->getRandomName();
+            $file->move(FCPATH . 'uploads', $nomeImagem);
+            $dados['imagem_produto'] = $nomeImagem;
         }
 
-        return false;
+        return $this->insert($dados) !== false;
     }
-} 
+
+    // atualiza um produto que já existe, trocando a imagem se for enviada uma nova
+    public function atualizarProduto(int $id, array $dados, $file = null): bool
+    {
+        $produto = $this->find($id);
+        if (!$produto) return false;
+
+        if ($file && $file->isValid()) {
+            $nomeImagem = $file->getRandomName();
+            $file->move(FCPATH . 'uploads', $nomeImagem);
+
+            // apaga a imagem antiga, se existir
+            if (!empty($produto['imagem_produto'])) {
+                $caminho = FCPATH . 'uploads/' . $produto['imagem_produto'];
+                if (file_exists($caminho)) unlink($caminho);
+            }
+
+            $dados['imagem_produto'] = $nomeImagem;
+        }
+
+        // remove valores nulos ou vazios pra não dar erro no update
+        $dados = array_filter($dados, fn($v) => $v !== null && $v !== '');
+        if (empty($dados)) return false;
+
+        return $this->update($id, $dados);
+    }
+
+    // deleta um produto e apaga a imagem associada, se existir
+    public function deletarProduto(int $id): bool
+    {
+        $produto = $this->find($id);
+        if (!$produto) return false;
+
+        if (!empty($produto['imagem_produto'])) {
+            $caminho = FCPATH . 'uploads/' . $produto['imagem_produto'];
+            if (file_exists($caminho)) unlink($caminho);
+        }
+
+        return $this->delete($id);
+    }
+}
