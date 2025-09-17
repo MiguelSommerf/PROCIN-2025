@@ -105,6 +105,17 @@ class ProdutoModel extends Model
 
         return $this->update($id, $dados);
     }
+    
+    public function encontrarProduto(int $idProduto): array|bool
+    {
+        $produto = $this->where('id_produto', $idProduto)->find();
+
+        if (!empty($produto)) {
+            return $produto;
+        }
+
+        return false;
+    }
 
     // deleta um produto e apaga a imagem associada, se existir
     public function deletarProduto(int $id): bool

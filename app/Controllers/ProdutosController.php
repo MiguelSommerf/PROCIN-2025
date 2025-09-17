@@ -3,10 +3,14 @@
 namespace App\Controllers;
 
 use App\Models\ProdutoModel;
+use CodeIgniter\API\ResponseTrait;
+use CodeIgniter\HTTP\ResponseInterface;
 use CodeIgniter\RESTful\ResourceController;
 
 class ProdutosController extends ResourceController
 {
+    use ResponseTrait;
+    
     protected $modelName = 'App\Models\ProdutoModel';
     protected $format    = 'json';
 
@@ -51,6 +55,18 @@ class ProdutosController extends ResourceController
             'id'      => $id,
             'data'    => $dados
         ]);
+    }
+
+    public function selecionarProduto($idProduto): ResponseInterface
+    {
+        $produtoModel = new ProdutoModel();
+        $produto = $produtoModel->encontrarProduto($idProduto);
+        
+        if ($produto) {
+            return $this->respond($produto);
+        }
+
+        return $this->respond(['mensagem' => 'Produto não encontrado.']);
     }
 
     // deletar o produto
