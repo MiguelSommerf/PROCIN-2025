@@ -14,19 +14,73 @@ class ProdutoCarrinhoModel extends Model
 
     protected bool $allowEmptyInserts = false;
 
-    public function adicionarProdutoCarrinho($idUsuario, $idProduto, $precoProduto): bool
+    public function adicionarProdutoCarrinho($idUsuario, $idProduto, int $quantidade): bool
     {
-        $carrinho = new CarrinhoModel();
-        $idCarrinho = $carrinho->encontrarCarrinho($idUsuario);
+        $carrinhoModel = new CarrinhoModel();
+        $idCarrinho = $carrinhoModel->encontrarCarrinho($idUsuario);
+        $idCarrinho = $idCarrinho['id_carrinho'];
 
-        if ($this->where('id_carrinho', $idCarrinho)->select()) {
-            $produtoQtd = (int)$this->where('id_produto', $idProduto)->select('quantidade_produto');
-            $produtoQtd++;
-            
-            if (!$this->where('id_produto', $idProduto)->select('preco_produto')) {
-                $this->insert($precoProduto);
+        if (!$this->verificarCarrinho($idCarrinho)) {
+            $produtoModel = new ProdutoModel();
+            $precoProduto = $produtoModel->select('preco_produto')->where('id_produto', $idProduto)->first();
+            $dadosCarrinho = [
+                'id_carrinho'           => $idCarrinho,
+                'id_produto'            => $idProduto,
+                'quantidade_produto'    => $quantidade,
+                'preco_produto'         => $precoProduto['preco_produto']
+            ];
+
+            $this->insert($dadosCarrinho);
+
+            return true;
+        }
+
+        if ($this->atualizarCarrinho($idCarrinho, $idProduto, $quantidade)) {
+            return true;
+        };
+
+        return false;
+    }
+
+    public function atualizarCarrinho($idCarrinho, $idProduto, int $quantidade): bool
+    {
+        // Atualiza um produto que já está no carrinho
+        if ($this->where('id_carrinho', $idCarrinho)->where('id_produto', $idProduto)->first()) {
+            $quantidadeProduto = (int)$this->select('quantidade_produto')->where('id_produto', $idProduto)->first();
+
+            if ($quantidade > 0 && $quantidade != $quantidadeProduto) {
+                $this->where('id_produto', $idProduto)->update(['quantidade_produto' => $quantidade]);
+                return true;
             }
 
+            if ($quantidade < 1 || $quantidade !== $quantidadeProduto) {
+                $this->where('id_carrinho', $idCarrinho)->delete();
+                return true;
+            }
+
+            return false;
+        }
+
+        // Adiciona um novo produto
+        $produtoModel = new ProdutoModel();
+        $precoProduto = (int)$produtoModel->select('preco_produto')->where('id_produto', $idProduto)->first();
+        $dadosProduto = [
+            'id_carrinho' => $idCarrinho,
+            'id_produto' => $idProduto,
+            'quantidade_produto' => $quantidade,
+            'preco_produto' => $precoProduto
+        ];
+
+        if ($this->insert($dadosProduto)) {
+            return true;
+        };
+
+        return false;
+    }
+
+    public function verificarCarrinho($idCarrinho): bool
+    {
+        if ($this->where('id_carrinho', $idCarrinho)->first()) {
             return true;
         }
 

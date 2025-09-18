@@ -57,13 +57,13 @@ class ProdutosController extends ResourceController
         ]);
     }
 
-    public function selecionarProduto($idProduto): ResponseInterface
+    public function selecionarProduto($idProduto): array|ResponseInterface
     {
         $produtoModel = new ProdutoModel();
         $produto = $produtoModel->encontrarProduto($idProduto);
-        
+
         if ($produto) {
-            return $this->respond($produto);
+            return $produto;
         }
 
         return $this->respond(['mensagem' => 'Produto não encontrado.']);

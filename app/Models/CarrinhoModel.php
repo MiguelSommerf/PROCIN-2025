@@ -17,22 +17,25 @@ class CarrinhoModel extends Model
     
     public function criarCarrinho($idUsuario): void
     {
-        if (!$this->find($idUsuario)->first()) {
+        if (!$this->where('id_usuario', $idUsuario)->find()) {
+            $idUsuario = ["id_usuario" => $idUsuario];
+
             $this->insert($idUsuario);
         }
     }
 
     public function excluirCarrinho($idUsuario): void
     {
-        if ($this->find($idUsuario)->first()) {
+        if ($this->where('id_usuario', $idUsuario)->find()) {
             $idCarrinho = $this->where('id_usuario', $idUsuario)->find('id_carrinho');
             $this->where('id_carrinho', $idCarrinho)->delete();
         }
     }
 
-    public function encontrarCarrinho($idUsuario): bool|string
+    public function encontrarCarrinho($idUsuario): bool|array
     {
-        $idCarrinho = $this->where('id_usuario', $idUsuario)->find('id_carrinho');
+        $idCarrinho = $this->select('id_carrinho')->where('id_usuario', $idUsuario)->first();
+
         if (empty($idCarrinho)) {
             return false;
         }

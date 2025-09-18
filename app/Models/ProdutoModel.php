@@ -108,7 +108,7 @@ class ProdutoModel extends Model
     
     public function encontrarProduto(int $idProduto): array|bool
     {
-        $produto = $this->where('id_produto', $idProduto)->find();
+        $produto = $this->where('id_produto', $idProduto)->first();
 
         if (!empty($produto)) {
             return $produto;

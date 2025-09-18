@@ -13,7 +13,7 @@ class CarrinhoController extends BaseController
     use ResponseTrait;
     public function carrinho(): ResponseInterface
     {
-        $request = $this->request->getJSON();
+        $request = $this->request->getJSON(true);
 
         $carrinho = new CarrinhoModel();
 
@@ -22,11 +22,11 @@ class CarrinhoController extends BaseController
         }
 
         $produtoController = new ProdutosController();
-        $dadosProduto = null;
-
+        $dadosProduto = $produtoController->selecionarProduto($request['id_produto']);
+        
         $produtoCarrinho = new ProdutoCarrinhoModel();
 
-        if ($produtoCarrinho->adicionarProdutoCarrinho($request['id_usuario'], $dadosProduto['id_produto'], $dadosProduto['preco_produto'])) {
+        if ($produtoCarrinho->adicionarProdutoCarrinho($request['id_usuario'], $dadosProduto['id_produto'], $request['quantidade_produto'])) {
             return $this->respondCreated(true);
         }
 
