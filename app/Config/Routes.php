@@ -12,7 +12,15 @@ $routes->group('src', function (RouteCollection $routes){
     $routes->post('pagamento', 'PagamentoController::gerarTransacao');
 
     $routes->group('produtos', function (RouteCollection $routes) {
-        $routes->get('selecionarProduto/(:num)', 'ProdutosController::selecionarProduto/$1');
+    $routes->get('selecionarProduto/(:num)', 'ProdutosController::selecionarProduto/$1');
+
+    $routes->group('usuario-produto', function (RouteCollection $routes) {
+    $routes->post('', 'UsuarioProdutoController::atribuirProduto');
+    $routes->get('(:num)', 'UsuarioProdutoController::listarProdutos/$1');
+    $routes->delete('', 'UsuarioProdutoController::removerProduto');
+});
+
+        
     });
 });
 
