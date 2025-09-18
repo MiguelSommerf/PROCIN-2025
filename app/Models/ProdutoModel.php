@@ -119,4 +119,5 @@ class ProdutoModel extends Model
 
         return $this->delete($id);
     }
+    
 }
