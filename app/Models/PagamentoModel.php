@@ -15,89 +15,61 @@ class PagamentoModel extends Model
     protected $protectFields    = true;
     protected $allowedFields    = [];
 
-    public function gerarPreference(array $produto): void
+    public function gerarPreference(string $pais, array $vendedor, array $produto, array $usuario): void
     {
-        MercadoPagoConfig::setAccessToken("TOKEN-DE-ACESSO");
+        MercadoPagoConfig::setAccessToken($vendedor['token_vendedor']);
 
         $client = new PreferenceClient();
-        $preference = $client->create([
-        "back_urls"=>array(
-            "success" => "https://test.com/success",
-            "failure" => "https://test.com/failure",
-            "pending" => "https://test.com/pending"
-        ),
-        "items" => array(
-            array(
-                "id" => "",
-                "title" => "",
-                "description" => "",
-                "picture_url" => "https://www.myapp.com/myimage.jpg",
-                "category_id" => "",
-                "quantity" => 2,
-                "currency_id" => "BRL",
-                "unit_price" => 100
-            )
-        ),
-        "payer" => array(
-            "name" => "Test",
-            "surname" => "User",
-            "email" => "your_test_email@example.com",
-            "phone" => array(
-                "area_code" => "11",
-                "number" => "4444-4444"
-            ),
-            "identification" => array(
-                "type" => "CPF",
-                "number" => "19119119100"
-            ),
-            "address" => array(
-                "zip_code" => "06233200",
-                "street_name" => "Street",
-                "street_number" => "123"
-            )
-        ),
-        "auto_return" => "all",
-        "payment_methods" => array(
-            "default_payment_method_id" => "master",
-            "excluded_payment_types" => array(
-                array(
-                    "id" => "visa"
-                )
-            ),
-            "excluded_payment_methods" => array(
-                array(
-                    "id" => ""
-                )
-            ),
-            "installments" => 5,
-            "default_installments" => 1
-        ),
-        "shipments" >= array(
-            "mode" => "custom",
-            "local_pickup" => false,
-            "default_shipping_method" => null,
-            "free_methods" => array(
-                array(
-                    "id" => 1
-                )
-            ),
-            "cost" => 10,
-            "free_shipping" => false,
-            "dimensions" => "10x10x20,500",
-            "receiver_address" => array(
-                "zip_code" => "06000000",
-                "street_number" => "123",
-                "street_name" => "Street",
-                "floor" => "12",
-                "apartment" => "120A",
-                "city_name" => "Rio de Janeiro",
-                "state_name" => "Rio de Janeiro",
-                "country_name" => "Brasil"
-            )
-        ),
-        "statement_descriptor" => "Test Store",
-        ]);
 
-        echo implode($preference);
+        // Posso tentar criar um foreach para cada produto, esperando receber mais de um produto.
+        switch ($pais) {
+            case "Brasil":
+                $preference = $client->create([
+                "back_urls"=>array(
+                    "success" => "https://test.com/success",
+                    "failure" => "https://test.com/failure",
+                    "pending" => "https://test.com/pending"
+                ),
+                "items" => array(
+                    array(
+                        "id" => "{$produto['id_produto']}",
+                        "title" => "{$produto['nome_produto']}",
+                        "description" => "{$produto['descricao_produto']}",
+                        "picture_url" => "{$produto['imagem_produto']}",
+                        "category_id" => "{$produto['especificacao_produto']}",
+                        "quantity" => $produto['quantidade_produto'],
+                        "currency_id" => "BRL",
+                        "unit_price" => $produto['preco_produto'] * $produto['quantidade_produto']
+                    )
+                ),
+                "payer" => array(
+                    "name" => "{$usuario['nome_usuario']}",
+                    "email" => "{$usuario['email_usuario']}",
+                    "phone" => array(
+                        "area_code" => "11",
+                        "number" => "4444-4444"
+                    ),
+                    "identification" => array(
+                        "type" => "CPF",
+                        "number" => "19119119100"
+                    ),
+                    "address" => array(
+                        "zip_code" => "06233200",
+                        "street_name" => "Street",
+                        "street_number" => "123"
+                    )
+                ),
+                "auto_return" => "all"
+                ]);
+        
+                echo implode($preference);
+            break;
+            case "Chile":
+                break;
+            case "":
+                break;
+            default:
+                exit();
+        }
     }
 }
