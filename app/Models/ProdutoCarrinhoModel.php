@@ -42,28 +42,31 @@ class ProdutoCarrinhoModel extends Model
         return false;
     }
 
-    public function atualizarCarrinho($idCarrinho, $idProduto, int $quantidade): bool
+    public function atualizarCarrinho($idCarrinho, $idProduto, int $quantidade): bool|string
     {
         // Atualiza um produto que já está no carrinho
-        if ($this->where('id_carrinho', $idCarrinho)->where('id_produto', $idProduto)->first()) {
-            $quantidadeProduto = (int)$this->select('quantidade_produto')->where('id_produto', $idProduto)->first();
+        if ($this->where(['id_carrinho' => $idCarrinho, 'id_produto' => $idProduto])->first()) {
+            $quantidadeProduto = $this->select('quantidade_produto')->where('id_produto', $idProduto)->first();
+            $quantidadeProduto = (int)$quantidadeProduto['quantidade_produto'];
 
             if ($quantidade > 0 && $quantidade != $quantidadeProduto) {
-                $this->where('id_produto', $idProduto)->update(['quantidade_produto' => $quantidade]);
+                $this->where('id_produto', $idProduto)->set('quantidade_produto', $quantidade)->update();
                 return true;
             }
-
+            
             if ($quantidade < 1 || $quantidade !== $quantidadeProduto) {
-                $this->where('id_carrinho', $idCarrinho)->delete();
+                $this->where('id_produto', $idProduto)->delete();
                 return true;
             }
-
+            
             return false;
         }
 
         // Adiciona um novo produto
         $produtoModel = new ProdutoModel();
-        $precoProduto = (int)$produtoModel->select('preco_produto')->where('id_produto', $idProduto)->first();
+        $precoProduto = $produtoModel->select('preco_produto')->where('id_produto', $idProduto)->first();
+        $precoProduto = (float)$precoProduto['preco_produto'];
+
         $dadosProduto = [
             'id_carrinho' => $idCarrinho,
             'id_produto' => $idProduto,
@@ -71,9 +74,11 @@ class ProdutoCarrinhoModel extends Model
             'preco_produto' => $precoProduto
         ];
 
-        if ($this->insert($dadosProduto)) {
-            return true;
-        };
+        if ($quantidade > 0 && is_numeric($quantidade)) {
+            if ($this->insert($dadosProduto)) {
+                return true;
+            };
+        }
 
         return false;
     }
