@@ -125,3 +125,6 @@ _modules/*
 
 /results/
 /phpunit*.xml
+
+# Upload Images
+public/uploads/*
