@@ -6,13 +6,13 @@ use App\Models\ProdutoModel;
 use App\Models\UsuarioProdutoModel;
 use CodeIgniter\RESTful\ResourceController;
 
-class UsuarioProdutoController extends ResourceController
+class VendedorProdutoController extends ResourceController
 {
     protected $usuarioProdutoModel;
 
     public function __construct()
     {
-        $this->usuarioProdutoModel = new UsuarioProdutoModel();
+        $this->VendedorProdutoModel = new VendedorProdutoModel();
     }
 
     
@@ -24,7 +24,7 @@ class UsuarioProdutoController extends ResourceController
         }
 
         
-        $existente = $this->usuarioProdutoModel
+        $existente = $this->VendedorProdutoModel
             ->where('id_usuario', $data['id_usuario'])
             ->where('id_produto', $data['id_produto'])
             ->first();
@@ -33,14 +33,14 @@ class UsuarioProdutoController extends ResourceController
             return $this->fail('Produto já atribuído a esse usuário', 409);
         }
 
-        $this->usuarioProdutoModel->insert($data);
+        $this->VendedorProdutoModel->insert($data);
         return $this->respondCreated(['message' => 'Produto atribuído com sucesso']);
     }
 
     
     public function listarProdutos($id_usuario)
     {
-        $produtos = $this->usuarioProdutoModel
+        $produtos = $this->VendedorProdutoModel
             ->select('tb_produto.*')
             ->join('tb_produto', 'tb_produto.id = tb_usuario_produto.id_produto')
             ->where('tb_usuario_produto.id_usuario', $id_usuario)
@@ -58,7 +58,7 @@ class UsuarioProdutoController extends ResourceController
             return $this->fail('id_usuario e id_produto são obrigatórios', 400);
         }
 
-        $this->usuarioProdutoModel
+        $this->VendedorProdutoModel
             ->where('id_usuario', $data['id_usuario'])
             ->where('id_produto', $data['id_produto'])
             ->delete();
