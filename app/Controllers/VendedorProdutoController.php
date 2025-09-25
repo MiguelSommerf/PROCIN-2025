@@ -11,7 +11,7 @@ class VendedorProdutoController extends ResourceController
 
     public function __construct()
     {
-        $this->model = new UsuarioProdutoModel();
+        $this->model = new VendedorProdutoModel();
     }
 
     // aqui adiciono produto e atribuo pra usuario
