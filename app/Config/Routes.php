@@ -19,10 +19,6 @@ $routes->group('src', function (RouteCollection $routes){
     $routes->get('(:num)', 'UsuarioProdutoController::listarProdutos/$1');
     $routes->delete('', 'UsuarioProdutoController::removerProduto');
 });
-$routes->group('auth/google', function (RouteCollection $routes) {
-    $routes->get('url','GoogleAuth::googleUrl');
-    $routes->get('callback', 'GoogleAuth::googleCallback');
-});
 
         
     });
@@ -30,3 +26,8 @@ $routes->group('auth/google', function (RouteCollection $routes) {
 
 // Sugestão: acredito que seria melhor agrupar todas as rotas de produto para um maior controle.
 $routes->resource('produtos', ['controller' => 'ProdutosController']);
+
+$routes->group('auth/google', function (RouteCollection $routes) {
+    $routes->get('url','GoogleAuth::googleUrl');
+    $routes->get('callback', 'GoogleAuth::googleCallback');
+});
