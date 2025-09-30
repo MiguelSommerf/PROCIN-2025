@@ -35,7 +35,8 @@ class Usuario extends Migration
             ],
             'nascimento_usuario' => [
                 'type'           => 'DATE',
-                'null'           => false,
+                'null'           => true,
+                'default'        => null,
             ],
             'criado_em'          => [
                 'type'           => 'DATETIME',

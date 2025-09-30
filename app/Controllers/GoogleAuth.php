@@ -26,7 +26,7 @@ class GoogleAuth extends ResourceController
         $client = $this->getGoogleClient();
         $authUrl = $client->createAuthUrl();
 
-        return $this->respond(['url' => $authUrl]);
+        return redirect()->to($authUrl);
     }
 
     public function googleCallback(): ResponseInterface
@@ -46,31 +46,14 @@ class GoogleAuth extends ResourceController
 
         $client->setAccessToken($token['access_token']);
         $googleService = new \Google\Service\OAuth2($client);
-        $googleUser = $googleService->userinfo->get();   
-
-        $validation = \Config\Services::validation();
-
-        $rules = [
-            'email_usuario' => 'required|valid_email|max_length[255]|is_unique[tb_usuario.email_usuario]'
-        ];
-
-        // Por conta da língua, essas mensagens podem ir para um outro arquivo futuramente.
-        $messages = [
-            'email_usuario' => [
-                'is_unique'   => 'O endereço de e-mail inserido já está cadastrado.'
-            ]
-        ];
+        $googleUser = $googleService->userinfo->get();
 
         $userData = [
             'nome_usuario' => $googleUser->name,
             'email_usuario' => $googleUser->email,
             'senha_usuario' => null,
-            'nascimento_usuario' => '0000-00-00',
+            'nascimento_usuario' => null,
         ];
-
-        if (!$validation->setRules($rules, $messages)->run($userData)) {
-            return $this->failValidationErrors($validation->getErrors());
-        }
 
         $userModel = new UserModel();
         $user = $userModel->where('email_usuario', $googleUser->email)->first();
@@ -78,6 +61,20 @@ class GoogleAuth extends ResourceController
         if (!$user) {
             $userModel->inserirUsuario($userData);
             $user = $userModel->where('email_usuario', $googleUser->email)->first();
+
+            helper('jwt');
+
+            $jwt = createJWT([
+                'id'    => $user['id_usuario'],
+                'email' => $user['email_usuario'],
+            ]);
+
+            return $this->respond([
+                'success' => true,
+                'jwt'     => $jwt,
+                'user'    => $user,
+                'login'   => false
+            ]);
         }
 
         helper('jwt');
@@ -88,8 +85,10 @@ class GoogleAuth extends ResourceController
         ]);
 
         return $this->respond([
-            'user'  => $user,
-            'token' => $jwt,
+            'success' => true,
+            'jwt'     => $jwt,
+            'user'    => $user,
+            'login'   => true
         ]);
     }
 }
