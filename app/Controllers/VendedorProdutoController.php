@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 
-use App\Models\UsuarioProdutoModel;
+use App\Models\VendedorProdutoModel;
 use CodeIgniter\RESTful\ResourceController;
 
 class VendedorProdutoController extends ResourceController
@@ -17,8 +17,10 @@ class VendedorProdutoController extends ResourceController
     // aqui adiciono produto e atribuo pra usuario
     public function atribuirProduto()
     {
-        $idUsuario = $this->request->getPost('id_usuario');
-        $idProduto = $this->request->getPost('id_produto');
+        $request = $this->request->getJSON(true);
+
+        $idUsuario = !empty($request['id_usuario']) ? $request['id_usuario'] : null;
+        $idProduto = !empty($request['id_produto']) ? $request['id_produto'] : null;
 
         if (!$idUsuario || !$idProduto) {
             return $this->failValidationErrors('id_usuario e id_produto são obrigatórios.');

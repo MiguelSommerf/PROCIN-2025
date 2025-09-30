@@ -16,6 +16,10 @@ class Vendedor extends Migration
                 'unsigned'        => true,
                 'auto_increment'  => true
             ],
+            'nome_vendedor'       => [
+                'type'            => 'VARCHAR',
+                'constraint'      => 255
+            ],
             'email_vendedor'      => [
                 'type'            => 'VARCHAR',
                 'constraint'      => 255,
