@@ -7,8 +7,8 @@ use CodeIgniter\Router\RouteCollection;
  */
 
 $routes->group('auth', function (RouteCollection $routes){
-    $routes->post('cadastrar', 'LoginController::cadastrar');
-    $routes->post('login', 'LoginController::logar');
+    $routes->post('cadastrar', 'AuthController::cadastrar');
+    $routes->post('login', 'AuthController::logar');
 
     $routes->group('google', function (RouteCollection $routes) {
         $routes->get('url','GoogleAuth::googleUrl');

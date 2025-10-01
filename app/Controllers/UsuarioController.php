@@ -11,15 +11,15 @@ class UsuarioController extends BaseController
 {
     use ResponseTrait;
     
-    public function cadastrarUsuario(array $request): ResponseInterface
+    public function cadastrarUsuario(array $request): bool
     {
         $userModel = new UserModel();
         
         if ($userModel->inserirUsuario($request)) {
-            return $this->respondCreated(true);
+            return true;
         }
 
-        return $this->respondCreated($userModel->errors());
+        return false;
     }
 
     public function logarUsuario(array $request): ResponseInterface
@@ -58,10 +58,10 @@ class UsuarioController extends BaseController
     public function retornarUsuario($emailUsuario): array|bool
     {
         $userModel = new UserModel();
-        $usuario = $userModel->retornarDadosUsuario($emailUsuario);
+        $dadosUsuario = $userModel->retornarDadosUsuario($emailUsuario);
 
-        if (!empty($usuario)) {
-            return $usuario;
+        if (!empty($dadosUsuario)) {
+            return $dadosUsuario;
         }
 
         return false;
