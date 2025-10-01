@@ -53,6 +53,7 @@ class UserModel extends Model
 
         if (!empty($query)) {
             $usuario = [
+                'id_usuario'    => $query['id_usuario'],
                 'email_usuario' => $query['email_usuario'],
                 'senha_usuario' => $query['senha_usuario']
             ];
