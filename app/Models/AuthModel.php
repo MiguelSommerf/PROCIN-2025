@@ -6,9 +6,16 @@ use CodeIgniter\Model;
 
 class AuthModel extends Model
 {
-    protected $usuarioModel = new UserModel();
-    protected $vendedorModel = new VendedorModel();
-    protected $lojaModel = null;
+    protected $usuarioModel;
+    protected $vendedorModel;
+    protected $lojaModel;
+
+    public function __construct()
+    {
+        $this->usuarioModel = new UserModel();
+        $this->vendedorModel = new VendedorModel();
+        $this->lojaModel = null;
+    }
 
     public function retornarTipoLogin(string $email): int
     {

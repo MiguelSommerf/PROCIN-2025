@@ -13,10 +13,24 @@ class AuthController extends BaseController
 {
     use ResponseTrait;
 
+    protected $authModel;
+    protected $usuarioController;
+    protected $vendedorController;
+    protected $lojaController;
+    protected $validation;
+
+    public function __construct()
+    {
+        $this->authModel = new AuthModel();
+        $this->usuarioController = new UsuarioController();
+        $this->vendedorController = new vendedorController();
+        $this->lojaController = null;
+        $this->validation = \Config\Services::validation();
+    }
+
     public function cadastrar(): ResponseInterface
     {
         $request = $this->request->getJSON(true);
-        $validation = \Config\Services::validation();
 
         $qtdRequest = count($request);
 
@@ -58,15 +72,13 @@ class AuthController extends BaseController
                     ]
                 ];
 
-                if (!$validation->setRules($rules, $messages)->run($request)) {
-                    return $this->failValidationErrors($validation->getErrors());
+                if (!$this->validation->setRules($rules, $messages)->run($request)) {
+                    return $this->failValidationErrors($this->validation->getErrors());
                 }
 
-                $usuarioController = new UsuarioController();
-
-                if ($usuarioController->cadastrarUsuario($request)) {
+                if ($this->usuarioController->cadastrarUsuario($request)) {
                     $emailUsuario = trim(strtolower($request['email_usuario']));
-                    $dadosUsuario = $usuarioController->retornarUsuario($emailUsuario);
+                    $dadosUsuario = $this->usuarioController->retornarUsuario($emailUsuario);
                     $idUsuario = $dadosUsuario['id_usuario'];
 
                     $payload = [
@@ -139,15 +151,13 @@ class AuthController extends BaseController
                     ],
                 ];
 
-                if (!$validation->setRules($rules, $messages)->run($request)) {
-                    return $this->failValidationErrors($validation->getErrors());
+                if (!$this->validation->setRules($rules, $messages)->run($request)) {
+                    return $this->failValidationErrors($this->validation->getErrors());
                 }
 
-                $vendedorController = new VendedorController();
-
-                if ($vendedorController->cadastrarVendedor($request)) {
+                if ($this->vendedorController->cadastrarVendedor($request)) {
                     $emailVendedor = trim(strtolower($request['email_vendedor']));
-                    $dadosVendedor = $vendedorController->retornarVendedor($emailVendedor);
+                    $dadosVendedor = $this->vendedorController->retornarVendedor($emailVendedor);
                     $idVendedor = $dadosVendedor['id_vendedor'];
 
                     $payload = [
@@ -188,32 +198,30 @@ class AuthController extends BaseController
     public function logar(): ResponseInterface
     {
         $request = $this->request->getJSON(true);
-        $validation = \Config\Services::validation();
 
         $rules = [
-            'email' => 'required|min_length[8]|max_length[255]',
-            'senha' => 'required|min_length[8]|max_length[255]'
+            'email' => 'required|valid_email|max_length[255]',
+            'senha' => 'required||max_length[255]'
         ];
 
         $messages = [
             'email' => [
                 'required'    => 'O endereço de e-mail é obrigatório.',
                 'valid_email' => 'O endereço de e-mail precisa ser válido.',
-                'max_length'  => 'O endereço de e-mail pode conter no máximo 255 caracteres.',
+                'max_length'  => 'O endereço de e-mail pode conter no máximo 255 caracteres.'
             ],
 
             'senha' => [
                 'required'   => 'O campo senha é obrigatório.',
-                'min_length' => 'O campo senha precisa conter no mínimo 8 caracteres.'
+                'max_length'  => 'O campo senha pode conter no máximo 255 caracteres.'
             ],
         ];
 
-        if (!$validation->setRules($rules, $messages)->run($request)) {
-            return $this->failValidationErrors($validation->getErrors());
+        if (!$this->validation->setRules($rules, $messages)->run($request)) {
+            return $this->failValidationErrors($this->validation->getErrors());
         }
 
-        $authModel = new AuthModel();
-        $login = $authModel->logar($request['email'], $request['senha']);
+        $login = $this->authModel->logar($request['email'], $request['senha']);
 
         if (!empty($login)) {
             $payload = [
