@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
+use App\Models\AuthModel;
 use CodeIgniter\HTTP\ResponseInterface;
 use Codeigniter\API\ResponseTrait;
 use Firebase\JWT\JWT;
@@ -182,5 +183,57 @@ class AuthController extends BaseController
                     'mensagem' => 'O tipo de conta é necessário para cadastrar.'
                 ]);
         }
+    }
+
+    public function logar(): ResponseInterface
+    {
+        $request = $this->request->getJSON(true);
+        $validation = \Config\Services::validation();
+
+        $rules = [
+            'email' => 'required|min_length[8]|max_length[255]',
+            'senha' => 'required|min_length[8]|max_length[255]'
+        ];
+
+        $messages = [
+            'email' => [
+                'required'    => 'O endereço de e-mail é obrigatório.',
+                'valid_email' => 'O endereço de e-mail precisa ser válido.',
+                'max_length'  => 'O endereço de e-mail pode conter no máximo 255 caracteres.',
+            ],
+
+            'senha' => [
+                'required'   => 'O campo senha é obrigatório.',
+                'min_length' => 'O campo senha precisa conter no mínimo 8 caracteres.'
+            ],
+        ];
+
+        if (!$validation->setRules($rules, $messages)->run($request)) {
+            return $this->failValidationErrors($validation->getErrors());
+        }
+
+        $authModel = new AuthModel();
+        $login = $authModel->logar($request['email'], $request['senha']);
+
+        if (!empty($login)) {
+            $payload = [
+                'iat' => time(),
+                'exp' => time() + 3600,
+                'data' => $login
+            ];
+
+            $secret = 'teste';
+            $jwt = JWT::encode($payload, $secret, 'HS256');
+
+            return $this->response->setJSON([
+                'status' => 'success',
+                'jwt'    => $jwt
+            ]);
+        }
+
+        return $this->response->setJSON([
+            'status'   => false,
+            'mensagem' => 'Usuário ou senha incorretos.'
+        ]);
     }
 }
