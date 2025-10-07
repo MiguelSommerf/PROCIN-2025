@@ -23,7 +23,7 @@ class AuthController extends BaseController
     {
         $this->authModel = new AuthModel();
         $this->usuarioController = new UsuarioController();
-        $this->vendedorController = new vendedorController();
+        $this->vendedorController = new VendedorController();
         $this->lojaController = null;
         $this->validation = \Config\Services::validation();
     }
@@ -201,7 +201,7 @@ class AuthController extends BaseController
 
         $rules = [
             'email' => 'required|valid_email|max_length[255]',
-            'senha' => 'required||max_length[255]'
+            'senha' => 'required|max_length[255]'
         ];
 
         $messages = [
