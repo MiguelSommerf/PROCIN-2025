@@ -30,3 +30,5 @@ $routes->group('vendedor', function (RouteCollection $routes) {
 $routes->group('produtos', function (RouteCollection $routes) {
     $routes->get('selecionarProduto/(:num)', 'ProdutosController::selecionarProduto/$1');
 });
+
+$routes->resource('lojas', ['controller' => 'LojaController']);
