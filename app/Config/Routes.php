@@ -32,3 +32,9 @@ $routes->group('produtos', function (RouteCollection $routes) {
 });
 
 $routes->resource('lojas', ['controller' => 'LojaController']);
+
+$routes->group('favorito', function (RouteCollection $routes) {
+    $routes->post('adicionar', 'FavoritoController::favorito');
+    $routes->post('remover', 'FavoritoController::remover');
+    $routes->get('listar/(:num)', 'FavoritoController::listar/$1');
+});
