@@ -6,14 +6,14 @@ use App\Controllers\BaseController;
 use App\Models\AuthModel;
 use CodeIgniter\HTTP\ResponseInterface;
 use Codeigniter\API\ResponseTrait;
-use Firebase\JWT\JWT;
-use Firebase\JWT\Key;
+
 
 class AuthController extends BaseController
 {
     use ResponseTrait;
 
     protected $authModel;
+    protected $jwtController;
     protected $usuarioController;
     protected $vendedorController;
     protected $lojaController;
@@ -22,6 +22,7 @@ class AuthController extends BaseController
     public function __construct()
     {
         $this->authModel = new AuthModel();
+        $this->jwtController = new JWTController();
         $this->usuarioController = new UsuarioController();
         $this->vendedorController = new VendedorController();
         $this->lojaController = null;
@@ -81,17 +82,7 @@ class AuthController extends BaseController
                     $dadosUsuario = $this->usuarioController->retornarUsuario($emailUsuario);
                     $idUsuario = $dadosUsuario['id_usuario'];
 
-                    $payload = [
-                        'iat'  => time(), //issued at -> data de emissão
-                        'exp'  => time() + 3600,
-                        'data' => [
-                            'id_usuario'    => (int)$idUsuario,
-                            'email_usuario' => $emailUsuario
-                        ]
-                    ];
-
-                    $secret = 'teste'; // Por enquanto, essa é a secret para testes. Entretanto, terá uma secret que não ficará disponível no github
-                    $jwt = JWT::encode($payload, $secret, 'HS256');
+                    $jwt = $this->jwtController->gerarJWT($idUsuario, $emailUsuario);
 
                     return $this->response->setJSON([
                         'status' => 'success',
@@ -160,17 +151,7 @@ class AuthController extends BaseController
                     $dadosVendedor = $this->vendedorController->retornarVendedor($emailVendedor);
                     $idVendedor = $dadosVendedor['id_vendedor'];
 
-                    $payload = [
-                        'iat'  => time(),
-                        'exp'  => time() + 3600,
-                        'data' => [
-                            'id_vendedor' => (int)$idVendedor,
-                            'email_vendedor' => $emailVendedor,
-                        ]
-                    ];
-
-                    $secret = "teste";
-                    $jwt = JWT::encode($payload, $secret, 'HS256');
+                    $jwt = $this->jwtController->gerarJWT($idVendedor, $emailVendedor);
 
                     return $this->response->setJSON([
                         'status' => 'success',
