@@ -3,16 +3,24 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
-use CodeIgniter\HTTP\ResponseInterface;
 use Firebase\JWT\JWT;
 
 class JWTController extends BaseController
 {
-    public function gerarJWT($id, $email): string
+    public function gerarJWT($id, $email): array
     {
-        $payload = [
-            'iat' => time(),
-            'exp' => time() + 1800,
+        $tokenPayload = [
+            'iat'  => time(),
+            'exp'  => time() + 1800,
+            'data' => [
+                'id'    => (int)$id,
+                'email' => $email
+            ]
+        ];
+
+        $refreshPayload = [
+            'iat'  => time(),
+            'exp'  => time() + 1209600,
             'data' => [
                 'id'    => (int)$id,
                 'email' => $email
@@ -20,9 +28,15 @@ class JWTController extends BaseController
         ];
 
         $secret = 'teste';
-        $token = JWT::encode($payload, $secret, 'HS256');
+        $token = JWT::encode($tokenPayload, $secret, 'HS256');
+        $refreshToken = JWT::encode($refreshPayload, $secret, 'HS256');
 
-        return $token;
+        $jwt = [
+            'token'   => $token,
+            'refresh' => $refreshToken,
+        ];
+
+        return $jwt;
     }
 
     public function atualizarToken ($jwt = false, $refreshToken = false): void

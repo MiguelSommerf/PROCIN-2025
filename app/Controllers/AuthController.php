@@ -85,8 +85,9 @@ class AuthController extends BaseController
                     $jwt = $this->jwtController->gerarJWT($idUsuario, $emailUsuario);
 
                     return $this->response->setJSON([
-                        'status' => 'success',
-                        'jwt'    => $jwt
+                        'status'  => 'success',
+                        'token'   => $jwt['token'],
+                        'refresh' => $jwt['refresh']
                     ]);
                 }
 
@@ -154,8 +155,9 @@ class AuthController extends BaseController
                     $jwt = $this->jwtController->gerarJWT($idVendedor, $emailVendedor);
 
                     return $this->response->setJSON([
-                        'status' => 'success',
-                        'jwt'    => $jwt
+                        'status'  => 'success',
+                        'token'   => $jwt['token'],
+                        'refresh' => $jwt['refresh']
                     ]);
                 }
 
@@ -205,18 +207,12 @@ class AuthController extends BaseController
         $login = $this->authModel->logar($request['email'], $request['senha']);
 
         if (!empty($login)) {
-            $payload = [
-                'iat' => time(),
-                'exp' => time() + 3600,
-                'data' => $login
-            ];
-
-            $secret = 'teste';
-            $jwt = JWT::encode($payload, $secret, 'HS256');
+            $jwt = $this->jwtController->gerarJWT($login['id_usuario'], $login['email_usuario']);
 
             return $this->response->setJSON([
-                'status' => 'success',
-                'jwt'    => $jwt
+                'status'  => 'success',
+                'token'   => $jwt['token'],
+                'refresh' => $jwt['refresh']
             ]);
         }
 
