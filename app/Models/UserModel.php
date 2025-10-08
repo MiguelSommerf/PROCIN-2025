@@ -10,7 +10,7 @@ class UserModel extends Model
     protected $primaryKey       = 'id_usuario';
     protected $useAutoIncrement = true;
     protected $protectFields    = true;
-    protected $allowedFields    = ['nome_usuario', 'email_usuario', 'senha_usuario', 'nascimento_usuario'];
+    protected $allowedFields    = ['nome_usuario', 'email_usuario', 'senha_usuario', 'nascimento_usuario', 'token', 'refresh_token'];
 
     protected bool $updateOnlyChanged = true;
 
@@ -30,6 +30,10 @@ class UserModel extends Model
         }
         
         return false;
+    }
+
+    public function atualizarUsuario(): bool
+    {
     }
 
     public function verificarSenha(array $request, string $senha): bool

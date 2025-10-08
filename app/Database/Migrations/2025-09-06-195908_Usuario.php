@@ -38,6 +38,18 @@ class Usuario extends Migration
                 'null'           => true,
                 'default'        => null,
             ],
+            'token'              => [
+                'type'       => 'TEXT',
+                'constraint' => 65535,
+                'null'       => true,
+                'default'    => null
+            ],
+            'refresh_token'      => [
+                'type' => 'TEXT',
+                'constraint' => 65535,
+                'null'       => true,
+                'default'    => null
+            ],
             'criado_em'          => [
                 'type'           => 'DATETIME',
                 'null'           => false,
