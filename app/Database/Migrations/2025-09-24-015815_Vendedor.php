@@ -33,6 +33,18 @@ class Vendedor extends Migration
                 'type'            => 'DATE',
                 'null'            => false
             ],
+            'token'              => [
+                'type'       => 'TEXT',
+                'constraint' => 65535,
+                'null'       => true,
+                'default'    => null
+            ],
+            'refresh_token'      => [
+                'type' => 'TEXT',
+                'constraint' => 65535,
+                'null'       => true,
+                'default'    => null
+            ],
             'criado_em'           => [
                 'type'            => 'DATETIME',
                 'default'         => new RawSql('current_timestamp')

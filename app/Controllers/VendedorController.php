@@ -4,18 +4,28 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 use App\Models\VendedorModel;
-use CodeIgniter\HTTP\ResponseInterface;
-use CodeIgniter\API\ResponseTrait;
 
 class VendedorController extends BaseController
 {
-    use ResponseTrait;
+    protected $vendedorModel;
+
+    public function __construct()
+    {
+        $this->vendedorModel = new VendedorModel();
+    }
 
     public function cadastrarVendedor(array $request): bool
     {
-        $vendedorModel = new VendedorModel();
+        if ($this->vendedorModel->inserirVendedor($request)) {
+            return true;
+        }
 
-        if ($vendedorModel->inserirVendedor($request)) {
+        return false;
+    }
+
+    public function atualizarVendedor($idVendedor, $campos, $dados): bool
+    {
+        if ($this->vendedorModel->atualizarVendedor($idVendedor, $campos, $dados)) {
             return true;
         }
 
@@ -24,8 +34,7 @@ class VendedorController extends BaseController
 
     public function retornarVendedor(string $emailVendedor): array|bool
     {
-        $vendedorModel = new VendedorModel();
-        $dadosVendedor = $vendedorModel->retornarDadosVendedor($emailVendedor);
+        $dadosVendedor = $this->vendedorModel->retornarDadosVendedor($emailVendedor);
 
         if (!empty($dadosVendedor)) {
             return $dadosVendedor;

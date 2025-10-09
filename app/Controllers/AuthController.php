@@ -84,11 +84,19 @@ class AuthController extends BaseController
 
                     $jwt = $this->jwtController->gerarJWT($idUsuario, $emailUsuario);
 
+                    if ($this->usuarioController->atualizarUsuario($idUsuario, ['token', 'refresh_token'], $jwt)) {
+                        return $this->response->setJSON([
+                            'status'  => 'success',
+                            'token'   => $jwt['token'],
+                            'refresh' => $jwt['refresh']
+                        ]);
+                    };
+
                     return $this->response->setJSON([
-                        'status'  => 'success',
-                        'token'   => $jwt['token'],
-                        'refresh' => $jwt['refresh']
+                        'status' => false,
+                        'mensagem' => 'Ocorreu um erro na geração de token.'
                     ]);
+
                 }
 
                 return $this->response->setJSON([
@@ -154,10 +162,17 @@ class AuthController extends BaseController
 
                     $jwt = $this->jwtController->gerarJWT($idVendedor, $emailVendedor);
 
+                    if ($this->vendedorController->atualizarVendedor($idVendedor, ['token', 'refresh_token'], $jwt)) {
+                        return $this->response->setJSON([
+                            'status'  => 'success',
+                            'token'   => $jwt['token'],
+                            'refresh' => $jwt['refresh']
+                        ]);
+                    };
+
                     return $this->response->setJSON([
-                        'status'  => 'success',
-                        'token'   => $jwt['token'],
-                        'refresh' => $jwt['refresh']
+                        'status' => false,
+                        'mensagem' => 'Ocorreu um erro na geração de token.'
                     ]);
                 }
 

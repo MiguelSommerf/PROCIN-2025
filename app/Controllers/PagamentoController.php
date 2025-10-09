@@ -3,7 +3,7 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
-use App\Models\UserModel;
+use App\Models\UsuarioController;
 use CodeIgniter\HTTP\ResponseInterface;
 use CodeIgniter\API\ResponseTrait;
 use App\Models\PagamentoModel;
@@ -16,9 +16,9 @@ class PagamentoController extends BaseController
     {
         $session = session();
 
-        $usuarioModel = new UserModel();
+        $usuarioController = new UsuarioController();
         $idUsuario = $session()->get('id_usuario');
-        $dadosUsuario = $usuarioModel->retornarDadosUsuario($idUsuario);
+        $dadosUsuario = $usuarioController->retornarDadosUsuario($idUsuario);
 
         // Preciso criar o cadastro de vendedor e model de vendedor
         $vendedorModel = null;

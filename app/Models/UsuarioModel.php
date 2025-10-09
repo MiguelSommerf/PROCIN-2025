@@ -4,7 +4,7 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class UserModel extends Model
+class UsuarioModel extends Model
 {
     protected $table            = 'tb_usuario';
     protected $primaryKey       = 'id_usuario';
@@ -32,8 +32,27 @@ class UserModel extends Model
         return false;
     }
 
-    public function atualizarUsuario(): bool
+    public function atualizarUsuario($idUsuario, array $campos, array $dados): bool
     {
+        if ($this->select('id_usuario')->where('id_usuario', $idUsuario)->first()) {
+            $quantidadeCampo = count($campos);
+
+            if ($quantidadeCampo > 1) {
+                $dadosAtualizados = array_combine($campos, $dados);
+
+                $this->where('id_usuario', $idUsuario)->set($dadosAtualizados)->update();
+
+                return true;
+            }
+
+            if ($this->where('id_usuario', $idUsuario)->update($campos, $dados)) {
+                return true;
+            };
+
+            return false;
+        }
+
+        return false;
     }
 
     public function verificarSenha(array $request, string $senha): bool

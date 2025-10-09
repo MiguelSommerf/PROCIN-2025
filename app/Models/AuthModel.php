@@ -12,7 +12,7 @@ class AuthModel extends Model
 
     public function __construct()
     {
-        $this->usuarioModel = new UserModel();
+        $this->usuarioModel = new UsuarioModel();
         $this->vendedorModel = new VendedorModel();
         $this->lojaModel = null;
     }

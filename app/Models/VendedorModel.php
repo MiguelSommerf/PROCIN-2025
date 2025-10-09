@@ -42,6 +42,29 @@ class VendedorModel extends Model
         return false;
     }
 
+    public function atualizarVendedor($idVendedor, array $campos, array $dados): bool
+    {
+        if ($this->select('id_vendedor')->where('id_vendedor', $idVendedor)->first()) {
+            $quantidadeCampo = count($campos);
+
+            if ($quantidadeCampo > 1) {
+                $dadosAtualizados = array_combine($campos, $dados);
+
+                $this->where('id_vendedor', $idVendedor)->set($dadosAtualizados)->update();
+
+                return true;
+            }
+
+            if ($this->where('id_vendedor', $idVendedor)->update($campos, $dados)) {
+                return true;
+            };
+
+            return false;
+        }
+
+        return false;
+    }
+
     public function verificarSenhaVendedor(array $vendedor, string $senhaVendedor): bool
     {
         $dadosVendedor = $this->retornarDadosVendedor($vendedor['email_vendedor']);
