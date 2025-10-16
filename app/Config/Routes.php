@@ -9,6 +9,7 @@ use CodeIgniter\Router\RouteCollection;
 $routes->group('auth', function (RouteCollection $routes){
     $routes->post('cadastrar', 'AuthController::cadastrar');
     $routes->post('login', 'AuthController::logar');
+    $routes->post('refresh', 'JWTController::atualizarToken');
 
     $routes->group('google', function (RouteCollection $routes) {
         $routes->get('url','GoogleAuth::googleUrl');

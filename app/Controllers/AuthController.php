@@ -222,7 +222,10 @@ class AuthController extends BaseController
         $login = $this->authModel->logar($request['email'], $request['senha']);
 
         if (!empty($login)) {
-            $jwt = $this->jwtController->gerarJWT($login['id_usuario'], $login['email_usuario']);
+            $jwt = $this->jwtController->gerarJWT($login['id'], $login['email']);
+            $tipoLogin = $this->authModel->retornarTipoLogin($login['email']);
+
+            $this->authModel->atualizarCliente($tipoLogin, $login['id'], ['token', 'refresh_token'], $jwt);
 
             return $this->response->setJSON([
                 'status'  => 'success',

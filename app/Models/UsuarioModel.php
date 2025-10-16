@@ -45,7 +45,7 @@ class UsuarioModel extends Model
                 return true;
             }
 
-            if ($this->where('id_usuario', $idUsuario)->update($campos, $dados)) {
+            if ($this->where('id_usuario', $idUsuario)->set($campos[0], $dados[0])->update()) {
                 return true;
             };
 

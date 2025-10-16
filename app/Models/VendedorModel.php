@@ -55,7 +55,7 @@ class VendedorModel extends Model
                 return true;
             }
 
-            if ($this->where('id_vendedor', $idVendedor)->update($campos, $dados)) {
+            if ($this->where('id_vendedor', $idVendedor)->set($campos[0], $dados[0])->update()) {
                 return true;
             };
 

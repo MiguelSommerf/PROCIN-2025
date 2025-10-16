@@ -47,8 +47,8 @@ class AuthModel extends Model
 
                 if (password_verify($senha, $senhaUsuario)) {
                     $usuario = [
-                        'id_usuario'    => $dadosUsuario['id_usuario'],
-                        'email_usuario' => $dadosUsuario['email_usuario']
+                        'id'    => $dadosUsuario['id_usuario'],
+                        'email' => $dadosUsuario['email_usuario']
                     ];
 
                     return $usuario;
@@ -61,8 +61,8 @@ class AuthModel extends Model
 
                 if (password_verify($senha, $senhaVendedor)) {
                     $vendedor = [
-                        'id_vendedor'    => $dadosVendedor['id_vendedor'],
-                        'email_vendedor' => $dadosVendedor['email_vendedor']
+                        'id'    => $dadosVendedor['id_vendedor'],
+                        'email' => $dadosVendedor['email_vendedor']
                     ];
 
                     return $vendedor;
@@ -74,5 +74,21 @@ class AuthModel extends Model
             default:
                 return false;
         }
+    }
+
+    public function atualizarCliente($tipoConta, $id, array $campos, array $dados): bool
+    {
+        switch ($tipoConta) {
+            case 1:
+                $this->usuarioModel->atualizarUsuario($id, $campos, $dados);
+                return true;
+            case 2:
+                $this->vendedorModel->atualizarVendedor($id, $campos, $dados);
+                return true;
+            case 3:
+                return true;
+        }
+
+        return false;
     }
 }
