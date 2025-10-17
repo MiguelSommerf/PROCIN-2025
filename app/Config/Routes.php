@@ -6,7 +6,7 @@ use CodeIgniter\Router\RouteCollection;
  * @var RouteCollection $routes
  */
 
-$routes->group('auth', function (RouteCollection $routes){
+$routes->group('auth', ['filter' => 'cors'], function (RouteCollection $routes){
     $routes->post('cadastrar', 'AuthController::cadastrar');
     $routes->post('login', 'AuthController::logar');
     $routes->post('refresh', 'JWTController::atualizarToken');
@@ -38,4 +38,8 @@ $routes->group('favorito', function (RouteCollection $routes) {
     $routes->post('adicionar', 'FavoritoController::favorito');
     $routes->post('remover', 'FavoritoController::remover');
     $routes->get('listar/(:num)', 'FavoritoController::listar/$1');
+});
+
+$routes->options('(:any)', function (){
+    return service('response')->setStatusCode(200);
 });
