@@ -4,7 +4,7 @@ use CodeIgniter\Router\RouteCollection;
 
 /**
  * @var RouteCollection $routes
- */
+ *///
 
 $routes->group('auth', ['filter' => 'cors'], function (RouteCollection $routes){
     $routes->post('cadastrar', 'AuthController::cadastrar');

@@ -55,7 +55,7 @@ class ProdutoModel extends Model
             'required' => 'O preço é obrigatório',
             'decimal'  => 'O preço deve estar em formato decimal'
         ],
-        'estoque_produto' => [
+        'estoque_produto' => [ //
             'required' => 'O estoque é obrigatório',
             'integer'  => 'O estoque precisa ser um número inteiro'
         ],
