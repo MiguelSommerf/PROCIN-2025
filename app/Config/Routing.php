@@ -48,7 +48,7 @@ class Routing extends BaseRouting
      *
      * Default: 'Home'
      */
-    public string $defaultController = 'Home';
+    public string $defaultController = 'ApiController';
 
     /**
      * For Defined Routes and Auto Routing.
@@ -84,7 +84,7 @@ class Routing extends BaseRouting
      * Example:
      *  public $override404 = 'App\Errors::show404';
      */
-    public ?string $override404 = null;
+    public ?string $override404 = 'App\Controllers\ApiController::notFound';
 
     /**
      * If TRUE, the system will attempt to match the URI against

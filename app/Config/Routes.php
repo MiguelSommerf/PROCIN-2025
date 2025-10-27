@@ -6,6 +6,8 @@ use CodeIgniter\Router\RouteCollection;
  * @var RouteCollection $routes
  *///
 
+$routes->get('/', 'ApiController::index');
+
 $routes->group('auth', ['filter' => 'cors'], function (RouteCollection $routes){
     $routes->post('cadastrar', 'AuthController::cadastrar');
     $routes->post('login', 'AuthController::logar');
